@@ -1,0 +1,89 @@
+.bulkForm {
+  margin-top: 20px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--mint-light);
+  border-radius: 12px;
+  font-size: 16px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.hint {
+  font-size: 14px;
+  color: var(--text-dark);
+  opacity: 0.7;
+  margin-bottom: 20px;
+}
+
+.languageRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.langBlock {
+  flex: 1;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--mint-darker);
+}
+
+.input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--mint-light);
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.swapWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.swapBtn {
+  background-color: var(--mint-light);
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 18px;
+  color: var(--mint-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.swapBtn:hover {
+  background-color: var(--mint-medium);
+  color: white;
+}
+
+.addBtn {
+  margin-top: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--mint-medium);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  background-color: var(--mint-darker);
+}

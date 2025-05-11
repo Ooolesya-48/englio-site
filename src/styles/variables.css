@@ -1,0 +1,21 @@
+:root {
+    --mint-light: #f0f9f5;
+    --mint-primary: #8bd8c7;
+    --mint-medium: #4dbfaa;
+    --mint-dark: #2a9d8f;
+    --mint-darker: #1d7870;
+    --accent: #ff9f1c;
+    --accent-light: #ffbf69;
+    --text-dark: #264653;
+    --text-light: #f8fafc;
+  
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+  
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+  }
+  

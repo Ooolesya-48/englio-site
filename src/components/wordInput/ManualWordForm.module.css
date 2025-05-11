@@ -1,0 +1,44 @@
+.manualForm {
+    margin-top: 20px;
+  }
+  
+  .group {
+    margin-bottom: 16px;
+  }
+  
+  .label {
+    font-weight: 600;
+    color: var(--mint-darker);
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 2px solid var(--mint-light);
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: var(--mint-medium);
+    box-shadow: 0 0 0 3px rgba(74, 191, 170, 0.2);
+  }
+  
+  .addBtn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: var(--mint-medium);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .addBtn:hover {
+    background-color: var(--mint-darker);
+  }
+  

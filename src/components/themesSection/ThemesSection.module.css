@@ -1,0 +1,99 @@
+.wrapper {
+    background-color: white;
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--mint-darker);
+    margin: 0;
+  }
+  
+  .addBtn {
+    background: transparent;
+    border: 2px solid var(--mint-dark);
+    color: var(--mint-dark);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .addBtn:hover {
+    background-color: var(--mint-light);
+  }
+  
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .card {
+    background-color: var(--mint-light);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    min-width: 140px;
+    flex: 0 1 calc(25% - 16px);
+  }
+  
+  .card:hover {
+    background-color: var(--mint-primary);
+    transform: translateY(-2px);
+  }
+  
+  .active {
+    background-color: var(--mint-medium);
+    color: white;
+  }
+  
+  .name {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  
+  .count {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  .empty {
+    font-size: 16px;
+    color: var(--mint-darker);
+    opacity: 0.7;
+    margin-top: 12px;
+  }
+  
+  .addBtn {
+    background-color: transparent;
+    border: 2px solid var(--mint-dark);
+    color: var(--mint-dark);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .addBtn:hover {
+    background-color: var(--mint-light);
+  }
+  

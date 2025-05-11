@@ -1,0 +1,21 @@
+/* ActionButton.module.css */
+
+.iconBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--mint-light);
+    color: var(--mint-dark);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  
+  .iconBtn:hover {
+    background-color: var(--mint-medium);
+    color: white;
+  }
+  
