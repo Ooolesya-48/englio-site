@@ -129,6 +129,9 @@ const CardsPage: React.FC = () => {
     const w = words[current];
     if (!w || !user) return;
 
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate(diff === 'easy' ? 30 : diff === 'hard' ? [30, 50, 30] : 20);
+
     const result = calculateReview(diff, w.difficulty, w.success_count);
     const newRecog = Math.min(100, w.recognition_score + result.recognition_delta);
     const newRecall = Math.min(100, w.recall_score + result.recall_delta);
