@@ -1,0 +1,32 @@
+.shell {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #F0F9F5;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .shell {
+    height: 700px;
+    min-height: 700px;
+    max-height: 700px;
+    border-radius: 36px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+    margin-top: 40px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.content::-webkit-scrollbar {
+  display: none;
+}

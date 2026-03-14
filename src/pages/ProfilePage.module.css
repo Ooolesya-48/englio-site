@@ -1,0 +1,293 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  min-height: 0;
+}
+
+/* Header */
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatarRing {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 3px solid #3dbaaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3dbaaa 0%, #2a9d8f 100%);
+  color: #fff;
+  font-size: 30px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* Stats widget */
+.statsWidget {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+}
+
+.statItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 36px;
+  background: #e5e7eb;
+}
+
+.statNumber {
+  font-size: 24px;
+  font-weight: 800;
+  color: #3dbaaa;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+}
+
+/* Calendar */
+.calendarSection {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.calMonthTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.calArrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.calArrow:hover:not(.calArrowDisabled) {
+  background: #f0f9f5;
+}
+
+.calArrowDisabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.calWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.calWeekday {
+  font-size: 11px;
+  font-weight: 700;
+  color: #aaa;
+  text-align: center;
+}
+
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calCellWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.calCell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calDayNum {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.l0 {
+  background: #f3f4f6;
+}
+
+.l0 .calDayNum {
+  color: #9ca3af;
+}
+
+.l1 {
+  background: #d6f2ef;
+}
+
+.l1 .calDayNum {
+  color: #2a9d8f;
+}
+
+.l2 {
+  background: #7ed1c4;
+}
+
+.l2 .calDayNum {
+  color: #fff;
+}
+
+.l3 {
+  background: #3dbaaa;
+}
+
+.l3 .calDayNum {
+  color: #fff;
+}
+
+.l4 {
+  background: #1a8a7e;
+}
+
+.l4 .calDayNum {
+  color: #fff;
+}
+
+.future {
+  background: #f9fafb;
+}
+
+.future .calDayNum {
+  color: #d1d5db;
+}
+
+.calToday {
+  outline: 2.5px solid #3dbaaa;
+  outline-offset: -1px;
+}
+
+.calStats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.calStatText {
+  font-size: 12px;
+  color: #888;
+}
+
+.calStatText b {
+  color: #3dbaaa;
+  font-weight: 800;
+}
+
+/* Menu */
+.menu {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.menuItem:last-child {
+  border-bottom: none;
+}
+
+.menuItem:hover {
+  background: #f9fafb;
+}
+
+.menuIcon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menuLabel {
+  flex: 1;
+}
+
+.menuArrow {
+  flex-shrink: 0;
+}
+
+.menuLogout {
+  color: #e74c3c;
+}

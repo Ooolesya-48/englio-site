@@ -1,0 +1,308 @@
+/* ── Card (phone shell on desktop) ── */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background: #F0F9F5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+  .card {
+    height: 700px;
+    min-height: 700px;
+    max-height: 700px;
+    border-radius: 36px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding-bottom: 0;
+    justify-content: center;
+  }
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  margin-bottom: 8px;
+}
+
+.heroImg {
+  width: 90%;
+  max-width: 360px;
+  display: block;
+}
+
+.logo {
+  position: absolute;
+  top: 8%;
+  left: 4%;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.logo:hover {
+  transform: scale(1.06);
+}
+
+.logo img {
+  height: 80px;
+  width: auto;
+  display: block;
+}
+
+/* ── Tags ── */
+.tagsSection {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.track {
+  display: flex;
+  gap: 8px;
+  padding: 5px 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag {
+  background: #fff;
+  border: 2px solid #6cc4bc;
+  border-radius: 50px;
+  padding: 7px 14px;
+  font-size: 13px;
+  color: #2a2a2a;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.tag:hover {
+  background: #3dbaaa;
+  color: #fff;
+  border-color: #3dbaaa;
+}
+
+/* ── Headline ── */
+.headline {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+  margin: 14px 24px 24px;
+}
+
+/* ── Buttons ── */
+.buttons {
+  width: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btnPrimary {
+  width: 100%;
+  padding: 18px;
+  background: #3dbaaa;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+}
+
+.btnPrimary:hover {
+  background: #34a898;
+  box-shadow: 0 8px 24px rgba(61, 186, 170, 0.38);
+}
+
+.btnPrimary:active {
+  transform: scale(0.97);
+}
+
+.btnSecondary {
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  color: #3dbaaa;
+  font-size: 18px;
+  font-weight: 700;
+  border: 2.5px solid #3dbaaa;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.12s;
+}
+
+.btnSecondary:hover {
+  background: #d6f2ef;
+}
+
+.btnSecondary:active {
+  transform: scale(0.97);
+}
+
+/* ── Modal overlay (inside card) ── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modalBox {
+  position: relative;
+  background: #fff;
+  width: 100%;
+  border-radius: 24px;
+  padding: 24px 28px 36px;
+  animation: modalFadeIn 0.25s ease;
+}
+
+.btnClose {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #bbb;
+  cursor: pointer;
+}
+
+.btnClose:hover {
+  color: #555;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── Modal content ── */
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 5px;
+}
+
+.field input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 2px solid #e5e5e5;
+  border-radius: 14px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus {
+  border-color: #3dbaaa;
+}
+
+.btnModal {
+  width: 100%;
+  padding: 16px;
+  margin-top: 8px;
+  background: #3dbaaa;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.12s;
+}
+
+.btnModal:hover {
+  background: #34a898;
+}
+
+.btnModal:active {
+  transform: scale(0.97);
+}
+
+.switchLink {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+  color: #888;
+}
+
+.switchLink a {
+  color: #3dbaaa;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.switchLink a:hover {
+  text-decoration: underline;
+}
+
+/* ── Messages ── */
+.errorMsg {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.successMsg {
+  background: #d6f2ef;
+  color: #2a9d8f;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.fieldError {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+  display: block;
+}
+
+.btnModal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

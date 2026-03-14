@@ -1,0 +1,89 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+  flex: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 24px;
+}
+
+.statsRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.statCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.statNumber {
+  font-size: 28px;
+  font-weight: 800;
+  color: #3dbaaa;
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+}
+
+.reviewBtn {
+  width: 100%;
+  padding: 16px;
+  background: #3dbaaa;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 16px;
+}
+
+.reviewBtn:hover {
+  background: #2a9d8f;
+}
+
+.allDone {
+  font-size: 15px;
+  color: #3dbaaa;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.logoutBtn {
+  margin-top: auto;
+  padding: 12px 28px;
+  background: #fff;
+  color: #3dbaaa;
+  border: 2px solid #3dbaaa;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logoutBtn:hover {
+  background: #d6f2ef;
+}

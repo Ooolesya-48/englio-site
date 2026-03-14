@@ -1,0 +1,38 @@
+.button {
+  padding: 14px 28px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  outline: none;
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.primary {
+  background: linear-gradient(135deg, #3dbaaa 0%, #2a9d8f 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.primary:hover {
+  opacity: 0.9;
+}
+
+.secondary {
+  background: #fff;
+  color: #3dbaaa;
+  border-color: #3dbaaa;
+}
+
+.secondary:hover {
+  background: #f0f9f5;
+}
+
+.fullWidth {
+  width: 100%;
+}
