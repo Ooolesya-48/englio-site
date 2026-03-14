@@ -69,53 +69,63 @@ const CardsPage: React.FC = () => {
   useEffect(() => { fetchWords(); }, [fetchWords]);
 
   // Autoplay: speak -> wait -> flip -> wait -> next
-  const autoplayStep = useRef(0); // 0=speak, 1=wait, 2=flip, 3=wait+next
+  const autoplayStep = useRef(0); // 0=speak, 1=flip+speak, 2=next
+  const currentRef = useRef(current);
+  currentRef.current = current;
 
   useEffect(() => {
     if (!autoplay || words.length === 0) return;
     autoplayStep.current = 0;
 
+    const safeSay = (text: string, lang: string) => {
+      try {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang;
+        u.rate = 0.9;
+        const voices = speechSynthesis.getVoices();
+        const v = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+        if (v) u.voice = v;
+        speechSynthesis.speak(u);
+      } catch {}
+    };
+
     const tick = () => {
       const step = autoplayStep.current;
+      const w = words[currentRef.current];
+      if (!w) return;
       if (step === 0) {
-        // Speak the word
-        const w = words[current];
-        if (w) {
-          const u = new SpeechSynthesisUtterance(w.lemma);
-          u.lang = 'en-US';
-          u.rate = 0.9;
-          speechSynthesis.speak(u);
-        }
+        safeSay(w.lemma, 'en-US');
         autoplayStep.current = 1;
       } else if (step === 1) {
-        // Flip to show translation + speak it
         setFlipped(true);
-        const w = words[current];
-        if (w) {
-          const u = new SpeechSynthesisUtterance(w.translation);
-          u.lang = 'ru-RU';
-          u.rate = 0.9;
-          speechSynthesis.speak(u);
-        }
+        safeSay(w.translation, 'ru-RU');
         autoplayStep.current = 2;
       } else if (step === 2) {
-        // Go to next card
         setCurrent((c) => (c + 1) % words.length);
         setFlipped(false);
         autoplayStep.current = 0;
       }
     };
 
-    tick(); // Start immediately with speak
+    tick();
     const timer = setInterval(tick, 2000);
-    return () => { clearInterval(timer); speechSynthesis.cancel(); };
-  }, [autoplay, words.length, current]);
+    return () => { clearInterval(timer); try { speechSynthesis.cancel(); } catch {} };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, words.length]);
 
   const speak = (text: string) => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    u.rate = 0.9;
-    speechSynthesis.speak(u);
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      // iOS workaround: voices may not be loaded yet
+      const voices = speechSynthesis.getVoices();
+      const enVoice = voices.find(v => v.lang.startsWith('en'));
+      if (enVoice) u.voice = enVoice;
+      speechSynthesis.speak(u);
+    } catch {}
   };
 
   const shuffle = () => {

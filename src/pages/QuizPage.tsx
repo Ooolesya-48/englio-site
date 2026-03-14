@@ -581,7 +581,7 @@ const QuizPage: React.FC = () => {
             cls += ` ${styles.optionSelected}`;
           }
           return (
-            <button key={i} className={cls} onClick={() => handleAnswer(opt)} disabled={answered}>
+            <button key={`${current}-${i}`} className={cls} onClick={() => handleAnswer(opt)} disabled={answered}>
               {opt}
             </button>
           );
