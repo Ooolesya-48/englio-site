@@ -144,7 +144,7 @@ const DefinitionPairsPage: React.FC = () => {
     if (words.length > 0) {
       const { data: contents } = await supabase
         .from('word_content')
-        .select('word_id, definition_en')
+        .select('word_id, definition_en, part_of_speech')
         .in('word_id', words.map(w => w.word_id));
 
       const rowIds = new Set<string>();
@@ -792,6 +792,7 @@ const DefinitionPairsPage: React.FC = () => {
             const isMatched = wordObj ? matched.has(wordObj.id) : false;
             const isJustMatched = wordObj ? justMatched === wordObj.id : false;
             const definition = getDefinition(wordId, settings.level);
+            const pos = contentMap.get(wordId)?.part_of_speech;
             return (
               <button
                 key={wordId}
@@ -800,6 +801,7 @@ const DefinitionPairsPage: React.FC = () => {
                 disabled={isMatched}
               >
                 {isMatched && <span className={styles.checkMark}>✓</span>}
+                {pos && <span className={styles.posTag}>{pos}</span>}
                 {definition}
               </button>
             );

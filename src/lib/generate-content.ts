@@ -98,6 +98,25 @@ async function callGPT(prompt: string): Promise<any | null> {
   return data;
 }
 
+// Валидация предложения fill_the_gap: ровно один ___, не слишком короткое/длинное
+function isValidFillGap(sentence: string): boolean {
+  const gaps = (sentence.match(/___/g) || []).length;
+  if (gaps !== 1) return false;
+  const wordCount = sentence.trim().split(/\s+/).length;
+  if (wordCount < 4 || wordCount > 25) return false;
+  return true;
+}
+
+// Фильтрует fill_the_gap — оставляет только валидные предложения
+function filterFillGap(content: any): any {
+  if (!content?.fill_the_gap) return content;
+  const filtered: Record<string, string[]> = {};
+  for (const [level, sentences] of Object.entries(content.fill_the_gap)) {
+    filtered[level] = (sentences as string[]).filter(isValidFillGap);
+  }
+  return { ...content, fill_the_gap: filtered };
+}
+
 // Лёгкая генерация — только fill_the_gap + vocabulary (быстро, для игры)
 export async function generateFillGapContent(
   wordId: string,
@@ -105,8 +124,9 @@ export async function generateFillGapContent(
   translation: string
 ): Promise<WordContent | null> {
   try {
-    const content = await callGPT(buildFillGapPrompt(lemma, translation));
-    if (!content) return null;
+    const raw = await callGPT(buildFillGapPrompt(lemma, translation));
+    if (!raw) return null;
+    const content = filterFillGap(raw);
 
     // Пополняем словарь независимо от результата сохранения
     saveVocabularyToWords(content.vocabulary || []);
@@ -136,8 +156,9 @@ export async function generateWordContent(
   translation: string
 ): Promise<WordContent | null> {
   try {
-    const content = await callGPT(buildWordContentPrompt(lemma, translation));
-    if (!content) return null;
+    const raw = await callGPT(buildWordContentPrompt(lemma, translation));
+    if (!raw) return null;
+    const content = filterFillGap(raw);
 
     const { data: saved, error } = await supabase
       .from('word_content')

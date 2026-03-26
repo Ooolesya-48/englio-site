@@ -331,6 +331,18 @@
   text-align: left;
   justify-content: flex-start;
   line-height: 1.45;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.posTag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #3dbaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
 }
 
 .tileSelected {
