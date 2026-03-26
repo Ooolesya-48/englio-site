@@ -174,7 +174,7 @@ export default function PublicCollectionPage() {
 
       <div className={styles.page}>
         {/* Шапка */}
-        <div className={styles.header} style={{ background: light, borderBottom: `3px solid ${accent}` }}>
+        <div className={styles.header}>
           <button className={styles.logoBtn} onClick={() => navigate('/')}>
             <span className={styles.logoText}>englio</span>
           </button>
@@ -184,7 +184,7 @@ export default function PublicCollectionPage() {
         </div>
 
         {/* Герой */}
-        <div className={styles.hero} style={{ background: light }}>
+        <div className={styles.hero}>
           <h1 className={styles.title}>{collection.title}</h1>
           {collection.author && (
             <p className={styles.desc}>Автор: {collection.author}</p>

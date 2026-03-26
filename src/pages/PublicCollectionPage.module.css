@@ -39,6 +39,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  background: #fff;
+  border-bottom: 3px solid #3dbaaa;
 }
 
 .logoBtn {
@@ -67,6 +69,7 @@
 .hero {
   padding: 20px 16px 24px;
   flex-shrink: 0;
+  background: #f0f9f5;
 }
 
 .title {
