@@ -2,13 +2,18 @@ import React from 'react';
 import BottomNav from './BottomNav';
 import styles from './AppLayout.module.css';
 
-const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface Props {
+  children: React.ReactNode;
+  hideNav?: boolean;
+}
+
+const AppLayout: React.FC<Props> = ({ children, hideNav }) => {
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell} id="app-shell">
       <div className={styles.content}>
         {children}
       </div>
-      <BottomNav />
+      {!hideNav && <BottomNav />}
     </div>
   );
 };

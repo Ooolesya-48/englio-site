@@ -1,0 +1,446 @@
+.page {
+  padding: 20px 16px 24px;
+  background: #f4fbf9;
+  min-height: 100%;
+}
+
+/* ── Поиск ── */
+.searchWrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.search {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border-radius: 16px;
+  border: 1.5px solid #d0ede9;
+  background: white;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+  color: #2d3436;
+}
+
+.search:focus {
+  border-color: #3eb4ac;
+}
+
+/* ── Верхняя сетка ── */
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.createCard {
+  background: white;
+  border: 2px dashed #a8d1c9;
+  border-radius: 22px;
+  height: 180px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  color: #3eb4ac;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.createCard:active {
+  opacity: 0.8;
+}
+
+/* ── Карточка коллекции ── */
+/*
+  collCard — обёртка, даёт цветной полосе «выглядывать» слева
+  cardBgLayer — цветная полоса (абс., left 0, шире чем отступ белой части)
+  cardMain    — белая часть (смещена padding-left от collCard)
+  stickerBox  — абс. относительно collCard, якорь — левый край белой части
+*/
+.collCard {
+  position: relative;
+  padding-left: 14px;   /* цветная полоса выглядывает на 14px слева */
+  height: 180px;
+}
+
+.cardBgLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  border-radius: 22px;
+  z-index: 1;
+}
+
+.themeTeal .cardBgLayer   { background: #3eb4ac; }
+.themeOrange .cardBgLayer { background: #ffb347; }
+.themePink .cardBgLayer   { background: #ff5e7d; }
+.themePurple .cardBgLayer { background: #a29bfe; }
+.themeMint .cardBgLayer   { background: #00cec9; }
+.themeBlue .cardBgLayer   { background: #74b9ff; }
+
+.cardMain {
+  position: relative;
+  background: white;
+  border-radius: 22px;
+  padding: 80px 14px 14px 14px; /* 80px сверху — место под стикер */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  box-sizing: border-box;
+  box-shadow: -4px 3px 10px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+}
+
+.cardMain:active {
+  opacity: 0.9;
+}
+
+/* ── Сердечко для «Избранного» ── */
+.heartIcon {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  z-index: 3;
+  line-height: 1;
+}
+
+/* ────────────────────────────────────────────────────────
+   СТИКЕР — точная копия стеклянный блок.html, масштаб ×0.32
+   Оригинал: wrapper 250×250, square 170×170, border-radius 48px
+   Масштаб:  wrapper ≈80×70,  square 54×54,  border-radius 15px
+   ──────────────────────────────────────────────────────── */
+
+/*
+  Обёртка позиционируется относительно collCard.
+  left: 14px = левый край белой cardMain (равно padding-left collCard).
+  Это «якорная точка» — стикер всегда ровно над белой частью.
+*/
+.stickerBox {
+  position: absolute;
+  top: 5px;
+  left: 40px;
+  width: 80px;
+  height: 70px;
+  z-index: 10;
+}
+
+/* Базовый класс обоих квадратов (повторяет .square из оригинала) */
+.stickerSquare {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;   /* 48 × 0.32 ≈ 15 */
+  bottom: 0;
+  left: 0;
+  transform-origin: bottom left;
+}
+
+/* 1. ЦВЕТНАЯ ПЛАСТИНА (повторяет .teal-layer) */
+.stickerBase {
+  z-index: 1;
+  transform: rotate(-22deg);
+  box-shadow:
+    -3px 4px 8px rgba(45, 133, 127, 0.3),       /* тень под стикером */
+    inset 2px 2px 4px rgba(255, 255, 255, 0.4),  /* светлый кант сверху */
+    inset -2px -4px 8px rgba(0, 0, 0, 0.1);      /* тёмный кант снизу */
+}
+
+.stickerBaseTeal   { background: #3eb4ac; }
+.stickerBaseOrange { background: #ffb347; }
+.stickerBasePink   { background: #ff5e7d; }
+.stickerBasePurple { background: #a29bfe; }
+.stickerBaseMint   { background: #00cec9; }
+.stickerBaseBlue   { background: #74b9ff; }
+
+/* 2. СТЕКЛЯННАЯ ПЛАСТИНА (повторяет .glass-layer) */
+.stickerGlass {
+  z-index: 2;
+  left: 6px;    /* 20 × 0.32 ≈ 6 */
+  bottom: 5px;  /* 15 × 0.32 ≈ 5 */
+  transform: rotate(0deg);
+
+  background: rgba(200, 240, 235, 0.15);
+  backdrop-filter: blur(4px);         /* 10 × 0.32 ≈ 3, берём 4 */
+  -webkit-backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.12),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.3);
+}
+
+/* Блик (повторяет .glass-layer::before) */
+.stickerGlass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0) 35%
+  );
+  pointer-events: none;
+}
+
+/* ── Текст карточки ── */
+.cardTitle {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #2d3436;
+  margin-bottom: auto;
+}
+
+.cardFooter {
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.cardInfo {
+  font-size: 11px;
+  color: #576574;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tagTeal   { background: #e0f6f4; color: #3eb4ac; }
+.tagOrange { background: #fff4e5; color: #e6920a; }
+.tagPink   { background: #ffebee; color: #ff5e7d; }
+.tagPurple { background: #ede9ff; color: #6c5ce7; }
+.tagMint   { background: #e0faf8; color: #00b5b0; }
+.tagBlue   { background: #e8f4ff; color: #4a9eff; }
+
+/* ── Секции ── */
+.section {
+  margin-bottom: 28px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sectionTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d3436;
+  margin: 0;
+}
+
+.infoIcon {
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.allBtn,
+.catalogBtn {
+  background: #3eb4ac;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(62, 180, 172, 0.4);
+}
+
+.allBtn:active,
+.catalogBtn:active {
+  opacity: 0.85;
+}
+
+/* ── Сетка Мои коллекции ── */
+.collGrid {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 20px;
+  margin-bottom: -20px;
+}
+
+.collGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.collGrid .collCard {
+  flex: 0 0 calc(50% - 7px);
+  scroll-snap-align: start;
+}
+
+.loadingRow,
+.emptyRow {
+  font-size: 14px;
+  color: #aaa;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* ── Список библиотеки ── */
+.libList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.libCard {
+  background: white;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Стикер для библиотеки — inline-версия, 48×48 */
+.libSticker {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.libStickerSquare {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+}
+
+.libStickerBase {
+  z-index: 1;
+  transform: rotate(-22deg);
+  box-shadow:
+    inset 2px 3px 6px rgba(255, 255, 255, 0.45),
+    inset -2px -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.libStickerBaseTeal   { background: #3eb4ac; }
+.libStickerBaseOrange { background: #ffb347; }
+.libStickerBasePink   { background: #ff5e7d; }
+.libStickerBasePurple { background: #a29bfe; }
+.libStickerBaseMint   { background: #00cec9; }
+.libStickerBaseBlue   { background: #74b9ff; }
+.libStickerBaseDark   { background: #e17055; }
+
+.libStickerGlass {
+  z-index: 2;
+  left: 5px;
+  bottom: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 1px 2px 5px rgba(255, 255, 255, 0.6),
+    inset -1px -2px 5px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.libStickerGlass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, transparent 60%);
+}
+
+.libInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.libTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3436;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.libMeta {
+  font-size: 12px;
+  color: #576574;
+  margin-top: 2px;
+}
+
+.addBtn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: inherit;
+  color: white;
+}
+
+.addBtn:active {
+  opacity: 0.85;
+}
+
+.addBtnTeal   { background: #3eb4ac; }
+.addBtnOrange { background: #ffb347; }
+.addBtnPink   { background: #ff5e7d; }
+.addBtnPurple { background: #a29bfe; }
+.addBtnMint   { background: #00cec9; }
+.addBtnBlue   { background: #74b9ff; }
+
+.addBtnAdded {
+  background: #e17055 !important;
+  color: white;
+}
+

@@ -1,25 +1,44 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { GAME_MODES } from '../lib/constants';
 import styles from './GamesPage.module.css';
-
-const games = [
-  { id: 'cards', icon: '🃏', title: 'Карточки', desc: 'Переворачивай и запоминай', path: '/cards', active: true },
-  { id: 'pairs', icon: '🔗', title: 'Составь пары', desc: 'Соедини слово и перевод', path: '/pairs', active: true },
-  { id: 'quiz', icon: '✅', title: 'Тест', desc: 'Выбери правильный ответ', path: '/quiz', active: true },
-];
 
 const GamesPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as { collectionId?: string; libraryCollectionId?: string; collectionTitle?: string } | null;
+  const collectionId = state?.collectionId;
+  const libraryCollectionId = state?.libraryCollectionId;
+  const collectionTitle = state?.collectionTitle;
+
+  const getPath = (base: string) => {
+    if (collectionId) {
+      const sep = base.includes('?') ? '&' : '?';
+      return `${base}${sep}collectionId=${collectionId}`;
+    }
+    if (libraryCollectionId) {
+      const sep = base.includes('?') ? '&' : '?';
+      return `${base}${sep}libraryCollectionId=${libraryCollectionId}`;
+    }
+    return base;
+  };
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Игры</h1>
+      {collectionTitle ? (
+        <>
+          <h1 className={styles.title}>Учить подборку</h1>
+          <p className={styles.subtitle}>«{collectionTitle}»</p>
+        </>
+      ) : (
+        <h1 className={styles.title}>Игры</h1>
+      )}
       <div className={styles.list}>
-        {games.map((g) => (
+        {GAME_MODES.map((g) => (
           <button
             key={g.id}
             className={`${styles.card} ${!g.active ? styles.disabled : ''}`}
-            onClick={() => g.active && navigate(g.path)}
+            onClick={() => g.active && navigate(getPath(g.basePath))}
             disabled={!g.active}
           >
             <span className={styles.icon}>{g.icon}</span>

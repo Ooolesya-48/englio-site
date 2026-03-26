@@ -161,13 +161,21 @@
   cursor: grabbing;
 }
 
+.swipeHintRow {
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
 .swipeHint {
-  position: absolute;
-  top: 16px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
-  z-index: 10;
   pointer-events: none;
+  white-space: nowrap;
 }
 
 .stackCard3 {
@@ -345,4 +353,87 @@
 
 .backBtnOutline:hover {
   background: #d6f2ef;
+}
+
+/* Sort mode */
+.cardHint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 12px;
+}
+
+.sortButtons {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 4px;
+  margin-top: 16px;
+}
+
+.sortBtnNo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: #fff;
+  border: 2px solid #e74c3c;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #e74c3c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sortBtnNo:active {
+  background: #fef2f2;
+  transform: scale(0.95);
+}
+
+.sortBtnYes {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: #fff;
+  border: 2px solid #2a9d8f;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2a9d8f;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sortBtnYes:active {
+  background: #d6f2ef;
+  transform: scale(0.95);
+}
+
+/* Sort results */
+.sortResults {
+  display: flex;
+  gap: 40px;
+  margin: 16px 0 24px;
+}
+
+.sortStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sortStatValue {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.sortStatLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  margin-top: 4px;
 }

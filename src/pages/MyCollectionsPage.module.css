@@ -1,0 +1,315 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 20px 16px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 32px;
+  font-weight: 300;
+  color: #2d3232;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.back:hover { opacity: 0.6; }
+
+.title {
+  font-size: 26px;
+  font-weight: 850;
+  color: #2d3232;
+  letter-spacing: -0.8px;
+  margin: 0;
+  flex: 1;
+}
+
+.content {
+  flex: 1;
+  background: #edf7f6;
+  border-radius: 35px 35px 0 0;
+  padding: 20px 15px 0;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.empty {
+  text-align: center;
+  color: #a0acac;
+  margin-top: 40px;
+  font-size: 15px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding-bottom: 32px;
+}
+
+/* ── Карточка коллекции (копия из CollectionsPage) ── */
+.collCard {
+  position: relative;
+  padding-left: 14px;
+  height: 180px;
+  cursor: pointer;
+}
+
+.cardBgLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  border-radius: 22px;
+  z-index: 1;
+}
+
+.themeTeal .cardBgLayer   { background: #3eb4ac; }
+.themeOrange .cardBgLayer { background: #ffb347; }
+.themePink .cardBgLayer   { background: #ff5e7d; }
+.themePurple .cardBgLayer { background: #a29bfe; }
+.themeMint .cardBgLayer   { background: #00cec9; }
+.themeBlue .cardBgLayer   { background: #74b9ff; }
+
+.cardMain {
+  position: relative;
+  background: white;
+  border-radius: 22px;
+  padding: 80px 14px 14px 14px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  box-sizing: border-box;
+  box-shadow: -4px 3px 10px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.cardMain:active { opacity: 0.9; }
+
+.stickerBox {
+  position: absolute;
+  top: 5px;
+  left: 40px;
+  width: 80px;
+  height: 70px;
+  z-index: 10;
+}
+
+.stickerSquare {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  bottom: 0;
+  left: 0;
+  transform-origin: bottom left;
+}
+
+.stickerBase {
+  z-index: 1;
+  transform: rotate(-22deg);
+  box-shadow:
+    -3px 4px 8px rgba(45,133,127,0.3),
+    inset 2px 2px 4px rgba(255,255,255,0.4),
+    inset -2px -4px 8px rgba(0,0,0,0.1);
+}
+
+.stickerBaseTeal   { background: #3eb4ac; }
+.stickerBaseOrange { background: #ffb347; }
+.stickerBasePink   { background: #ff5e7d; }
+.stickerBasePurple { background: #a29bfe; }
+.stickerBaseMint   { background: #00cec9; }
+.stickerBaseBlue   { background: #74b9ff; }
+
+.stickerGlass {
+  z-index: 2;
+  left: 6px;
+  bottom: 5px;
+  transform: rotate(0deg);
+  background: rgba(200,240,235,0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  box-shadow:
+    0 5px 10px rgba(0,0,0,0.12),
+    inset 2px 2px 6px rgba(255,255,255,0.3);
+}
+
+.stickerGlass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 35%);
+  pointer-events: none;
+}
+
+.cardTitle {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #2d3436;
+  margin-bottom: auto;
+}
+
+.cardFooter {
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.cardInfo {
+  font-size: 11px;
+  color: #576574;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.folderTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.tagTeal   { background: #e0f6f4; color: #3eb4ac; }
+.tagOrange { background: #fff4e5; color: #e6920a; }
+.tagPink   { background: #ffebee; color: #ff5e7d; }
+.tagPurple { background: #ede9ff; color: #6c5ce7; }
+.tagMint   { background: #e0faf8; color: #00b5b0; }
+.tagBlue   { background: #e8f4ff; color: #4a9eff; }
+
+/* ── Папка (родительская коллекция) ── */
+.folderSection {
+  background: white;
+  border-radius: 18px;
+  padding: 14px 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.folderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.folderName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #2d3436;
+  cursor: pointer;
+}
+
+.folderName:active { opacity: 0.7; }
+
+.folderDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.addSubBtn {
+  background: #edf7f6;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #35a091;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.addSubBtn:active { opacity: 0.75; }
+
+.subGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ── Карточка подколлекции ── */
+.subCard {
+  background: white;
+  border-radius: 14px;
+  padding: 12px 12px 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 80px;
+}
+
+.subCard:active { opacity: 0.85; }
+
+.subCardAccent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  border-radius: 14px 0 0 14px;
+}
+
+.subCardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d3436;
+  line-height: 1.3;
+  margin-bottom: auto;
+  padding-left: 10px;
+  padding-bottom: 6px;
+}
+
+.subCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+}
+
+.subCardInfo {
+  font-size: 11px;
+  color: #636e72;
+  font-weight: 600;
+}
+
+.subCardTag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}

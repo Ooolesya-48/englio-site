@@ -32,10 +32,13 @@ export interface UserWord {
   word?: Word;
 }
 
+export type CollectionColor = string; // named: 'teal'|'orange'|'pink'|'purple'|'mint'|'blue', or any hex '#rrggbb'
+
 export interface Collection {
   id: string;
   user_id: string;
   title: string;
+  color: CollectionColor;
   created_at: string;
 }
 
@@ -43,6 +46,17 @@ export interface CollectionWord {
   id: string;
   collection_id: string;
   word_id: string;
+  added_at: string;
+}
+
+export interface LibraryCollection {
+  id: string;
+  title: string;
+  author: string;
+  color: CollectionColor;
+  word_count: number;
+  is_popular: boolean;
+  created_at: string;
 }
 
 export interface ExerciseSession {

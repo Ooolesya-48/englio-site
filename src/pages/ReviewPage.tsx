@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
+import { GAME_MODES } from '../lib/constants';
 import styles from './ReviewPage.module.css';
 
-const modes = [
-  { id: 'cards', icon: '🃏', title: 'Карточки', desc: 'Переворачивай и запоминай', path: '/cards?review=true' },
-  { id: 'pairs', icon: '🔗', title: 'Составь пары', desc: 'Соедини слово и перевод', path: '/pairs?review=true', minWords: 4 },
-  { id: 'quiz', icon: '✅', title: 'Тест', desc: 'Выбери правильный ответ', path: '/quiz?review=true', minWords: 4 },
-];
+const reviewModes = GAME_MODES
+  .filter((g) => g.reviewable && g.active)
+  .map((g) => {
+    const sep = g.basePath.includes('?') ? '&' : '?';
+    return { ...g, path: `${g.basePath}${sep}review=true` };
+  });
 
 const ReviewPage: React.FC = () => {
   const { user } = useAuth();
@@ -62,7 +64,7 @@ const ReviewPage: React.FC = () => {
       <p className={styles.subtitle}>Выберите режим повторения:</p>
 
       <div className={styles.list}>
-        {modes.map((m) => {
+        {reviewModes.map((m) => {
           const disabled = m.minWords ? dueCount < m.minWords : false;
           return (
             <button

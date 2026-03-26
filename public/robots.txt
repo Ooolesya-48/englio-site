@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Disallow: /home
+Disallow: /dictionary
+Disallow: /games
+Disallow: /cards
+Disallow: /pairs
+Disallow: /quiz
+Disallow: /review
+Disallow: /profile
+Disallow: /fill-gap
+Disallow: /definition-pairs
+Disallow: /my-collections
+Disallow: /collections/create
+
+Sitemap: https://englio.ru/sitemap.xml

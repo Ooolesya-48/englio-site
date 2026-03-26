@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
+import { enrichAllWordMeanings, resetEnrichProgress } from '../lib/generate-content';
 import styles from './ProfilePage.module.css';
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -14,6 +15,8 @@ const ProfilePage: React.FC = () => {
   const [streakDays, setStreakDays] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [activityMap, setActivityMap] = useState<Record<string, number>>({});
+  const [enriching, setEnriching] = useState(false);
+  const [enrichProgress, setEnrichProgress] = useState<{ done: number; total: number } | null>(null);
   const [calMonth, setCalMonth] = useState(() => new Date().getMonth());
   const [calYear, setCalYear] = useState(() => new Date().getFullYear());
 
@@ -163,6 +166,15 @@ const ProfilePage: React.FC = () => {
     navigate('/');
   };
 
+  const handleEnrichWords = async () => {
+    setEnriching(true);
+    setEnrichProgress({ done: 0, total: 0 });
+    resetEnrichProgress(); // начать заново
+    await enrichAllWordMeanings((done, total) => setEnrichProgress({ done, total }));
+    setEnriching(false);
+    setEnrichProgress(null);
+  };
+
   const menuItems = [
     { icon: '✏️', label: 'Изменить профиль', action: () => navigate('/profile/edit') },
     { icon: '🔔', label: 'Уведомления', action: () => navigate('/profile/notifications') },
@@ -256,6 +268,14 @@ const ProfilePage: React.FC = () => {
             <svg className={styles.menuArrow} width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#ccc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         ))}
+        <button className={styles.menuItem} onClick={handleEnrichWords} disabled={enriching}>
+          <span className={styles.menuIcon}>📚</span>
+          <span className={styles.menuLabel}>
+            {enriching && enrichProgress
+              ? `Обновляем переводы... ${enrichProgress.done}/${enrichProgress.total}`
+              : enriching ? 'Загружаем...' : 'Обновить переводы слов'}
+          </span>
+        </button>
         <button className={`${styles.menuItem} ${styles.menuLogout}`} onClick={handleSignOut}>
           <span className={styles.menuIcon}>🚪</span>
           <span className={styles.menuLabel}>Выйти</span>

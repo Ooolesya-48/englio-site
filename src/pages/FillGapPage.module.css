@@ -1,0 +1,302 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #F0F9F5;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  background: #F0F9F5;
+  flex-shrink: 0;
+}
+.headerBack {
+  width: 34px; height: 34px;
+  border: none; background: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 50%;
+}
+.headerBack:active { background: #e0f0ed; }
+.headerTitle { font-size: 17px; font-weight: 700; color: #111827; }
+.headerScore { font-size: 14px; font-weight: 600; color: #3dbaaa; min-width: 34px; text-align: right; }
+
+/* Scroll area */
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 14px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.scroll::-webkit-scrollbar { display: none; }
+
+/* Word bank */
+.bankSection {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.bankLabel { font-size: 12px; color: #9ca3af; margin-bottom: 10px; }
+.bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 36px;
+}
+.bankEmpty { font-size: 13px; color: #9ca3af; font-style: italic; }
+
+/* Chips */
+.chip {
+  padding: 8px 16px;
+  background: #f0f9f5;
+  border: 2px solid #d6f2ef;
+  border-radius: 50px;
+  font-size: 14px; font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.chip:active { transform: scale(0.95); }
+.chipSelected {
+  border-color: #3dbaaa;
+  background: #d6f2ef;
+  color: #1a6b62;
+  box-shadow: 0 0 0 3px rgba(61,186,170,0.2);
+}
+
+/* Sentences */
+.sentences {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sentenceRow {
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.sentenceRowWrong { background: #fff8f8; }
+.sentenceNum {
+  font-size: 13px; font-weight: 700;
+  color: #9ca3af;
+  min-width: 18px;
+  padding-top: 2px;
+}
+.sentence {
+  font-size: 14px; line-height: 1.9;
+  color: #374151;
+  word-break: break-word;
+  flex: 1;
+}
+
+/* Clickable words in sentence */
+.clickableWord {
+  cursor: pointer;
+  border-bottom: 1px dashed #3dbaaa;
+  color: #374151;
+  transition: color 0.15s;
+}
+.clickableWord:hover, .clickableWord:active { color: #3dbaaa; }
+
+/* Gap */
+.gap {
+  display: inline-block;
+  min-width: 72px;
+  padding: 1px 10px;
+  border-radius: 8px;
+  background: #f0f9f5;
+  border: 2px dashed #3dbaaa;
+  color: #9ca3af;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  vertical-align: middle;
+  font-size: 13px;
+}
+.gapReady {
+  border-color: #2a9d8f;
+  background: #e8f7f5;
+  animation: pulse 0.8s ease infinite alternate;
+}
+@keyframes pulse { from { box-shadow: 0 0 0 0 rgba(61,186,170,0.3); } to { box-shadow: 0 0 0 5px rgba(61,186,170,0); } }
+.gapFilled {
+  border-style: solid;
+  border-color: #3dbaaa;
+  background: #d6f2ef;
+  color: #1a6b62;
+}
+.gapSelected {
+  border-style: solid;
+  border-color: #f59e0b;
+  background: #fef3c7;
+  color: #92400e;
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.2);
+}
+.gapCorrect {
+  border-style: solid;
+  border-color: #10b981;
+  background: #d1fae5;
+  color: #065f46;
+}
+.gapWrong {
+  border-style: solid;
+  border-color: #ef4444;
+  background: #fee2e2;
+  color: #b91c1c;
+  text-decoration: line-through;
+}
+.correctAnswer {
+  font-size: 13px; color: #10b981; font-weight: 700;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.primaryBtn {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #3dbaaa, #2a9d8f);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.primaryBtn:disabled { opacity: 0.4; cursor: default; }
+.secondaryBtn {
+  width: 100%; padding: 12px;
+  background: #fff; color: #3dbaaa;
+  border: 2px solid #3dbaaa; border-radius: 14px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+}
+
+/* Result row */
+.resultRow {
+  display: flex; align-items: center; gap: 10px;
+  justify-content: center; padding: 4px 0;
+}
+.stars { font-size: 24px; }
+.resultText { font-size: 18px; font-weight: 700; color: #111827; }
+
+.saveHint { font-size: 12px; color: #9ca3af; text-align: center; }
+.wordResults { display: flex; flex-direction: column; gap: 8px; }
+.wordResultChip {
+  width: 100%; padding: 10px 14px;
+  background: #fff; border: 2px solid #e5e7eb;
+  border-radius: 12px; text-align: left;
+  font-size: 14px; color: #374151; cursor: pointer;
+  transition: all 0.15s;
+}
+.wordResultChipMarked { border-color: #3dbaaa; background: #d6f2ef; color: #1a6b62; }
+.resultCorrect { color: #10b981; font-weight: 700; }
+.resultWrong { color: #ef4444; font-weight: 700; }
+.saveBtn {
+  width: 100%; padding: 12px;
+  background: #fff; color: #3dbaaa;
+  border: 2px solid #3dbaaa; border-radius: 14px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
+
+/* Loading */
+.loadingBox {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 16px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid #d6f2ef;
+  border-top-color: #3dbaaa;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loadingMsg { font-size: 14px; color: #888; }
+.empty { text-align: center; padding: 32px 24px; font-size: 15px; color: #888; }
+
+/* Overlay — поверх всей карточки */
+.overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: flex-end;
+  z-index: 200;
+  border-radius: inherit;
+}
+
+/* Save modal */
+.modal {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 32px;
+  width: 100%;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.modalTitle { font-size: 17px; font-weight: 700; color: #111827; }
+.colList { display: flex; flex-direction: column; gap: 8px; }
+.colItem {
+  padding: 11px 14px; background: #f9fafb;
+  border: 2px solid #e5e7eb; border-radius: 12px;
+  font-size: 14px; color: #374151; cursor: pointer; text-align: left;
+  transition: all 0.15s;
+}
+.colItemActive { border-color: #3dbaaa; background: #d6f2ef; color: #1a6b62; }
+.input {
+  padding: 11px 14px; border: 2px solid #3dbaaa;
+  border-radius: 12px; font-size: 14px; outline: none;
+  width: 100%; box-sizing: border-box;
+}
+.modalActions { display: flex; gap: 10px; }
+.cancelBtn {
+  flex: 1; padding: 12px; background: #f3f4f6;
+  border: none; border-radius: 14px;
+  font-size: 14px; font-weight: 600; color: #6b7280; cursor: pointer;
+}
+
+/* Translate popup — снизу как sheet */
+.translatePopup {
+  position: relative;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  width: 100%;
+}
+.popupClose {
+  position: absolute; top: 14px; right: 16px;
+  background: #f3f4f6; border: none; border-radius: 50%;
+  width: 28px; height: 28px; font-size: 13px;
+  cursor: pointer; color: #6b7280;
+  display: flex; align-items: center; justify-content: center;
+}
+.popupWordRow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.popupWord { font-size: 20px; font-weight: 700; color: #111827; margin: 0; }
+.speakBtn {
+  background: none; border: none; padding: 2px 4px;
+  font-size: 16px; cursor: pointer; opacity: 0.6; flex-shrink: 0;
+}
+.speakBtn:active { opacity: 1; transform: scale(1.2); }
+.popupFormTranslation { font-size: 17px; color: #111827; font-weight: 600; margin: 0 0 4px; }
+.popupFormNote { font-size: 12px; color: #9ca3af; margin: 0 0 12px; }
+.popupFormNote strong { color: #6b7280; }
+.meaningsList { margin-bottom: 16px; display: flex; flex-direction: column; gap: 4px; }
+.popupTranslation { font-size: 16px; color: #374151; margin: 0; }
+.popupMuted { font-size: 14px; color: #9ca3af; margin-bottom: 16px; }
+.popupAddBtn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, #3dbaaa, #2a9d8f);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.popupAddBtnDone { background: #e5e7eb; color: #6b7280; }

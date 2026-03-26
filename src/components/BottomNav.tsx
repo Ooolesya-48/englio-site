@@ -6,6 +6,7 @@ const tabs = [
   { path: '/home', label: 'Главная', icon: '🏠' },
   { path: '/games', label: 'Игры', icon: '🎮' },
   { path: '/dictionary', label: 'Словарь', icon: '📖' },
+  { path: '/collections', label: 'Коллекции', icon: '📂' },
   { path: '/profile', label: 'Профиль', icon: '👤' },
 ];
 

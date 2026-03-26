@@ -90,6 +90,9 @@ const PairsPage: React.FC = () => {
 
   const fetchWords = useCallback(async () => {
     if (!user) return;
+    const collectionId = searchParams.get('collectionId');
+    const libraryCollectionId = searchParams.get('libraryCollectionId');
+
     let query = supabase
       .from('user_words')
       .select('id, word_id, recognition_score, recall_score, success_count, difficulty, words(lemma, translation)')
@@ -100,23 +103,38 @@ const PairsPage: React.FC = () => {
       query = query.not('next_review', 'is', null).lte('next_review', now);
     }
 
-    const { data } = await query;
-
-    if (data) {
-      const words = data.map((d: any) => ({
-        id: d.id,
-        word_id: d.word_id,
-        lemma: d.words?.lemma || '',
-        translation: d.words?.translation || '',
-        recognition_score: d.recognition_score || 0,
-        recall_score: d.recall_score || 0,
-        success_count: d.success_count || 0,
-        difficulty: d.difficulty || 2.5,
-      }));
-      setAllDbWords(words);
+    if (collectionId) {
+      const { data: cw } = await supabase.from('collection_words').select('word_id').eq('collection_id', collectionId);
+      const wordIds = (cw ?? []).map((r: any) => r.word_id);
+      if (wordIds.length === 0) { setAllDbWords([]); setLoading(false); return; }
+      query = query.in('word_id', wordIds);
+    } else if (libraryCollectionId) {
+      const { data: lcw } = await supabase.from('library_collection_words').select('word').eq('library_collection_id', libraryCollectionId);
+      const lemmas = (lcw ?? []).map((r: any) => r.word.toLowerCase());
+      if (lemmas.length === 0) { setAllDbWords([]); setLoading(false); return; }
+      const { data: wds } = await supabase.from('words').select('id').in('lemma', lemmas);
+      const wordIds = (wds ?? []).map((w: any) => w.id);
+      if (wordIds.length === 0) { setAllDbWords([]); setLoading(false); return; }
+      query = query.in('word_id', wordIds);
     }
+
+    const { data } = await query;
+    if (!data) { setLoading(false); return; }
+
+    const words = data.map((d: any) => ({
+      id: d.id,
+      word_id: d.word_id,
+      lemma: d.words?.lemma || '',
+      translation: d.words?.translation || '',
+      recognition_score: d.recognition_score || 0,
+      recall_score: d.recall_score || 0,
+      success_count: d.success_count || 0,
+      difficulty: d.difficulty || 2.5,
+    }));
+
+    setAllDbWords(words);
     setLoading(false);
-  }, [user, isReview]);
+  }, [user, isReview, searchParams]);
 
   const fetchCollections = useCallback(async () => {
     if (!user) return;
