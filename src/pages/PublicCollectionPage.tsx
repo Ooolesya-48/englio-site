@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { toHex, hexLight } from '../lib/colorUtils';
+import { toHex } from '../lib/colorUtils';
 import { normalizeLevel } from '../lib/generate-content';
 import styles from './PublicCollectionPage.module.css';
 
@@ -153,7 +153,6 @@ export default function PublicCollectionPage() {
   }
 
   const accent = toHex(collection.color);
-  const light = hexLight(accent);
 
   const ctaLabel = !user
     ? 'Начать учить бесплатно'

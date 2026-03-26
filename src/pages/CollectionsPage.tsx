@@ -87,7 +87,7 @@ const CollectionsPage: React.FC = () => {
       { data: libData },
       { data: addedLib },
     ] = await Promise.all([
-      supabase.from('collections').select('id, title, color').eq('user_id', user.id).is('parent_id', null).order('created_at', { ascending: false }),
+      supabase.from('collections').select('id, title, color, created_at').eq('user_id', user.id).is('parent_id', null).order('created_at', { ascending: false }),
       supabase.from('user_words').select('word_id, recognition_score, recall_score').eq('user_id', user.id),
       supabase.from('user_words').select('recognition_score, recall_score').eq('user_id', user.id).eq('is_favorite', true),
       supabase.from('library_collections').select('id, title, author, color, word_count').eq('is_popular', true).order('created_at', { ascending: true }),
@@ -149,7 +149,7 @@ const CollectionsPage: React.FC = () => {
     if (collections && collections.length > 0) {
       // Загружаем подколлекции чтобы суммировать их слова в родительские
       const { data: subCols } = await supabase
-        .from('collections').select('id, parent_id')
+        .from('collections').select('id, parent_id, created_at')
         .eq('user_id', user.id).not('parent_id', 'is', null);
 
       const subToParent = new Map((subCols ?? []).map(s => [s.id, s.parent_id as string]));
@@ -165,6 +165,14 @@ const CollectionsPage: React.FC = () => {
         if (!grouped.has(key)) grouped.set(key, []);
         grouped.get(key)!.push(cw.word_id);
       }
+      // Находим максимальную дату активности для каждого родителя (чтобы сортировать по последней активности)
+      const parentLatest = new Map<string, string>();
+      for (const s of subCols ?? []) {
+        if (!s.parent_id) continue;
+        const cur = parentLatest.get(s.parent_id) ?? '';
+        if ((s.created_at ?? '') > cur) parentLatest.set(s.parent_id, s.created_at ?? '');
+      }
+
       newMyCollections = collections.map(c => {
         const wordIds = grouped.get(c.id) ?? [];
         const scores = wordIds.map(id => userWordMap.get(id) ?? 0);
@@ -175,6 +183,14 @@ const CollectionsPage: React.FC = () => {
           progress: scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0,
         };
       });
+
+      // Сортируем: по максимальной дате (родитель или самая новая подколлекция), новые — первыми
+      newMyCollections.sort((a, b) => {
+        const aTime = parentLatest.get(a.id) ?? (collections.find(c => c.id === a.id) as any)?.created_at ?? '';
+        const bTime = parentLatest.get(b.id) ?? (collections.find(c => c.id === b.id) as any)?.created_at ?? '';
+        return bTime.localeCompare(aTime);
+      });
+
       setMyCollections(newMyCollections);
     } else {
       setMyCollections([]);

@@ -29,7 +29,7 @@ const sitemapPlugin = {
         `${supabaseUrl}/rest/v1/library_collections?is_popular=eq.true&select=id`,
         { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
       )
-      const collections: { id: string }[] = await res.json()
+      const collections = await res.json() as { id: string }[]
       const base = 'https://englio.ru'
       const urls = [
         `${base}/`,
