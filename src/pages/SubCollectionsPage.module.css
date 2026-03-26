@@ -88,6 +88,32 @@
   font-size: 15px;
 }
 
+.skeletonCard {
+  height: 180px;
+  border-radius: 22px;
+  background: #e8f0ef;
+  overflow: hidden;
+  position: relative;
+}
+
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

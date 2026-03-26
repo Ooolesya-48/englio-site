@@ -6,7 +6,7 @@ import type { CollectionColor } from '../types';
 import CollectionDetailDrawer from '../components/CollectionDetailDrawer';
 import styles from './SubCollectionsPage.module.css';
 import { toHex, hexLight } from '../lib/colorUtils';
-import { invalidateCache } from '../lib/pageCache';
+import { getCached, setCached, invalidateCache } from '../lib/pageCache';
 import { ORPHAN_TITLE, pluralWords } from '../lib/constants';
 
 // Защита от двойного запуска в React StrictMode
@@ -32,8 +32,13 @@ const SubCollectionsPage: React.FC = () => {
   const location = useLocation();
   const state = (location.state as LocationState) ?? {};
 
-  const [subs, setSubs] = useState<SubCollection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const cacheKey = `subCols_${parentId}`;
+  const [subs, setSubs] = useState<SubCollection[]>(() =>
+    parentId ? getCached<SubCollection[]>(`subCols_${parentId}`) ?? [] : []
+  );
+  const [loading, setLoading] = useState(() =>
+    !parentId || !getCached<SubCollection[]>(`subCols_${parentId}`)
+  );
   const [detailCollection, setDetailCollection] = useState<SubCollection | null>(null);
   const [parentDetailOpen, setParentDetailOpen] = useState(false);
   const [parentTitle, setParentTitle] = useState(state.title ?? '');
@@ -179,7 +184,7 @@ const SubCollectionsPage: React.FC = () => {
       grouped.get(cw.collection_id)!.push(cw.word_id);
     }
 
-    setSubs(collections.map(c => {
+    const result = collections.map(c => {
       const wordIds = grouped.get(c.id) ?? [];
       const scores = wordIds.map(id => userWordMap.get(id) ?? 0);
       return {
@@ -189,8 +194,9 @@ const SubCollectionsPage: React.FC = () => {
         wordCount: wordIds.length,
         progress: scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0,
       };
-    }));
-
+    });
+    setSubs(result);
+    setCached(cacheKey, result);
     setLoading(false);
   };
 
@@ -208,8 +214,14 @@ const SubCollectionsPage: React.FC = () => {
       </div>
 
       <div className={styles.content}>
-        {loading ? (
-          <p className={styles.empty}>Загрузка...</p>
+        {loading && subs.length === 0 ? (
+          <div className={styles.grid}>
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className={styles.skeletonCard}>
+                <div className={styles.shimmer} />
+              </div>
+            ))}
+          </div>
         ) : subs.length === 0 ? (
           <p className={styles.empty}>Пока нет уроков</p>
         ) : (
