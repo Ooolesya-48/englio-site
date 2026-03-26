@@ -60,6 +60,10 @@ const DictionaryPage: React.FC = () => {
   const [bulkText, setBulkText] = useState('');
   const [bulkResult, setBulkResult] = useState('');
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [wordSuggestions, setWordSuggestions] = useState<{id: string; lemma: string; translation: string}[]>([]);
+  const [translationOptions, setTranslationOptions] = useState<string[]>([]);
+  const [lookingUp, setLookingUp] = useState(false);
+  const suggestTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Edit modal
   const [editWord, setEditWord] = useState<WordItem | null>(null);
@@ -134,6 +138,39 @@ const DictionaryPage: React.FC = () => {
     return () => document.removeEventListener('click', handler);
   }, [openMenu]);
 
+  // Autocomplete + translation lookup when typing new word
+  useEffect(() => {
+    if (!showAdd) return;
+    const word = newWord.trim();
+    if (word.length < 2) { setWordSuggestions([]); setTranslationOptions([]); return; }
+    if (suggestTimer.current) clearTimeout(suggestTimer.current);
+    suggestTimer.current = setTimeout(async () => {
+      const { data } = await supabase.from('words')
+        .select('id, lemma, translation').ilike('lemma', `${word}%`).limit(5);
+      setWordSuggestions(data ?? []);
+      const exact = (data ?? []).find((w: any) => w.lemma.toLowerCase() === word.toLowerCase());
+      if (exact) {
+        if (!newTranslation) setNewTranslation(exact.translation);
+        setTranslationOptions([]);
+      } else {
+        setLookingUp(true);
+        try {
+          const res = await fetch(`https://lingva.ml/api/v1/en/ru/${encodeURIComponent(word)}`);
+          const json = await res.json();
+          const opts: string[] = [];
+          if (json?.translation && /[а-яёА-ЯЁ]/.test(json.translation)) opts.push(json.translation);
+          (json?.info?.translate as Array<[string, string[]]> | undefined)?.forEach(([, variants]) => {
+            variants.slice(0, 2).forEach((v: string) => {
+              if (/[а-яёА-ЯЁ]/.test(v) && !opts.includes(v)) opts.push(v);
+            });
+          });
+          setTranslationOptions(opts.slice(0, 6));
+        } catch { setTranslationOptions([]); }
+        setLookingUp(false);
+      }
+    }, 500);
+  }, [newWord, showAdd]);
+
   const speak = (text: string) => {
     try {
       speechSynthesis.cancel();
@@ -169,7 +206,7 @@ const DictionaryPage: React.FC = () => {
     const { data: dup } = await supabase.from('user_words').select('id').eq('user_id', user.id).eq('word_id', wordId).limit(1);
     if (dup && dup.length > 0) { setAddError('Слово уже есть в словаре'); return; }
     await supabase.from('user_words').insert({ user_id: user.id, word_id: wordId, source: 'manual' });
-    setNewWord(''); setNewTranslation(''); setShowAdd(false); loadAll(true);
+    setNewWord(''); setNewTranslation(''); setShowAdd(false); setWordSuggestions([]); setTranslationOptions([]); loadAll(true);
     // Фоновая генерация — не ждём, UI не блокируем
     precacheWord(wordId, newWord.trim().toLowerCase(), newTranslation.trim());
   };
@@ -375,7 +412,7 @@ const DictionaryPage: React.FC = () => {
       </div>
 
       {/* Add word modal */}
-      <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Добавить слово">
+      <Modal isOpen={showAdd} onClose={() => { setShowAdd(false); setNewWord(''); setNewTranslation(''); setWordSuggestions([]); setTranslationOptions([]); }} title="Добавить слово">
         <div className={styles.addTabs}>
           <button className={`${styles.addTab} ${!showBulk ? styles.addTabActive : ''}`} onClick={() => setShowBulk(false)}>Одно слово</button>
           <button className={`${styles.addTab} ${showBulk ? styles.addTabActive : ''}`} onClick={() => setShowBulk(true)}>Импорт</button>
@@ -383,8 +420,42 @@ const DictionaryPage: React.FC = () => {
         {!showBulk ? (
           <>
             {addError && <div className={styles.error}>{addError}</div>}
-            <div className={styles.field}><label>Слово (англ.)</label><input value={newWord} onChange={(e) => setNewWord(e.target.value)} placeholder="apple" /></div>
-            <div className={styles.field}><label>Перевод</label><input value={newTranslation} onChange={(e) => setNewTranslation(e.target.value)} placeholder="яблоко" onKeyDown={(e) => e.key === 'Enter' && addWord()} /></div>
+            <div className={styles.field}>
+              <label>Слово (англ.)</label>
+              <div className={styles.autocompleteWrap}>
+                <input
+                  value={newWord}
+                  onChange={(e) => { setNewWord(e.target.value); setNewTranslation(''); setTranslationOptions([]); }}
+                  placeholder="apple"
+                  autoComplete="off"
+                />
+                {wordSuggestions.length > 0 && (
+                  <div className={styles.suggestionList}>
+                    {wordSuggestions.map(s => (
+                      <button key={s.id} className={styles.suggestionItem}
+                        onMouseDown={() => { setNewWord(s.lemma); setNewTranslation(s.translation); setWordSuggestions([]); setTranslationOptions([]); }}>
+                        <span className={styles.suggestionEn}>{s.lemma}</span>
+                        <span className={styles.suggestionRu}>{s.translation}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={styles.field}>
+              <label>Перевод {lookingUp && <span className={styles.lookingUp}>ищем...</span>}</label>
+              {translationOptions.length > 0 && (
+                <div className={styles.chipRow}>
+                  {translationOptions.map(opt => (
+                    <button key={opt} className={`${styles.chip} ${newTranslation === opt ? styles.chipActive : ''}`}
+                      onMouseDown={() => setNewTranslation(opt)}>
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <input value={newTranslation} onChange={(e) => setNewTranslation(e.target.value)} placeholder="яблоко" onKeyDown={(e) => e.key === 'Enter' && addWord()} />
+            </div>
             <button className={styles.submitBtn} onClick={addWord}>Добавить</button>
           </>
         ) : (
