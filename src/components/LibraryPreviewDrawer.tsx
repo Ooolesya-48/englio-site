@@ -45,6 +45,7 @@ const LibraryPreviewDrawer: React.FC<Props> = ({
   const [heightPct, setHeightPct] = useState(DEFAULT_HEIGHT);
   const dragStartY = useRef<number | null>(null);
   const dragStartH = useRef<number>(DEFAULT_HEIGHT);
+  const dragMoved = useRef(false);
 
   useEffect(() => {
     supabase
@@ -172,11 +173,13 @@ const LibraryPreviewDrawer: React.FC<Props> = ({
   const onDragStart = useCallback((clientY: number) => {
     dragStartY.current = clientY;
     dragStartH.current = heightPct;
+    dragMoved.current = false;
   }, [heightPct]);
 
   const onDragMove = useCallback((clientY: number) => {
     if (dragStartY.current === null) return;
     const delta = dragStartY.current - clientY;
+    if (Math.abs(delta) > 5) dragMoved.current = true;
     const shellH = getShellHeight();
     const deltaPct = (delta / shellH) * 100;
     const next = Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, dragStartH.current + deltaPct));
@@ -196,7 +199,7 @@ const LibraryPreviewDrawer: React.FC<Props> = ({
 
 
   const content = (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={() => { if (!dragMoved.current) onClose(); }}>
       <div
         className={styles.drawer}
         style={{ height: `${heightPct}%` }}
