@@ -49,32 +49,6 @@ const cardThemeClass: Record<CollectionColor, string> = {
   blue: styles.themeBlue,
 };
 
-const stickerBaseClass: Record<CollectionColor, string> = {
-  teal: styles.stickerBaseTeal,
-  orange: styles.stickerBaseOrange,
-  pink: styles.stickerBasePink,
-  purple: styles.stickerBasePurple,
-  mint: styles.stickerBaseMint,
-  blue: styles.stickerBaseBlue,
-};
-
-const libStickerBaseClass: Record<CollectionColor, string> = {
-  teal: styles.libStickerBaseTeal,
-  orange: styles.libStickerBaseOrange,
-  pink: styles.libStickerBasePink,
-  purple: styles.libStickerBasePurple,
-  mint: styles.libStickerBaseMint,
-  blue: styles.libStickerBaseBlue,
-};
-
-const addBtnClass: Record<CollectionColor, string> = {
-  teal: styles.addBtnTeal,
-  orange: styles.addBtnOrange,
-  pink: styles.addBtnPink,
-  purple: styles.addBtnPurple,
-  mint: styles.addBtnMint,
-  blue: styles.addBtnBlue,
-};
 
 interface CollectionsCache {
   myCollections: MyCollection[];

@@ -26,7 +26,7 @@ const EditProfilePage: React.FC = () => {
 
   // Crop modal
   const [cropImage, setCropImage] = useState<string | null>(null);
-  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [_cropFile, setCropFile] = useState<File | null>(null);
   const [cropOffset, setCropOffset] = useState({ x: 0, y: 0 });
   const [cropScale, setCropScale] = useState(1);
   const [imgSize, setImgSize] = useState({ w: 0, h: 0 });

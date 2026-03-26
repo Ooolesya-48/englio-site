@@ -75,13 +75,13 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {!showSkeleton && dueCount > 0 && (
+      {!showSkeleton && dueCount !== null && dueCount > 0 && (
         <button className={styles.reviewBtn} onClick={() => navigate('/review')}>
           Повторить {dueCount} {dueCount === 1 ? 'слово' : dueCount < 5 ? 'слова' : 'слов'}
         </button>
       )}
 
-      {statsLoaded && dueCount === 0 && totalWords > 0 && (
+      {statsLoaded && dueCount === 0 && totalWords !== null && totalWords > 0 && (
         <p className={styles.allDone}>Все слова повторены! 🎉</p>
       )}
     </div>

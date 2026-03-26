@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { getOrGenerateFillGap, getOrGenerateWordContent, normalizeLevel } from '../lib/generate-content';
+import { getOrGenerateFillGap, normalizeLevel } from '../lib/generate-content';
 import { calculateReview, getNextReviewDate } from '../lib/spaced-repetition';
 import styles from './FillGapPage.module.css';
 
@@ -55,7 +55,7 @@ const FillGapPage: React.FC = () => {
 
   const [checked, setChecked] = useState(false);
   const [checkResults, setCheckResults] = useState<boolean[]>([]);
-  const [finished, setFinished] = useState(false);
+  const [_finished, setFinished] = useState(false);
 
   // Translate popup
   const [translateWord, setTranslateWord] = useState<string | null>(null);
@@ -122,7 +122,7 @@ const FillGapPage: React.FC = () => {
     dragGhost.current.style.top = `${touch.clientY}px`;
 
     // Highlight gap under touch
-    gapRefs.current.forEach((el, i) => {
+    gapRefs.current.forEach((el, _i) => {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const over = touch.clientX >= rect.left && touch.clientX <= rect.right
@@ -836,7 +836,8 @@ const FillGapPage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        portalTarget
       )}
 
       {/* Translate popup */}

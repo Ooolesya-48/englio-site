@@ -164,7 +164,6 @@ const LibraryPreviewDrawer: React.FC<Props> = ({
     onClose();
   };
 
-  const notInVocab = words.filter(w => !userLemmas.has(w.word.toLowerCase()));
 
   // Drag to resize
   const getShellHeight = () =>
