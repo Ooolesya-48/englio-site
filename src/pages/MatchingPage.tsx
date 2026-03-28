@@ -90,17 +90,18 @@ const MatchingPage: React.FC = () => {
       wordIds = (wds || []).map((r: { id: string }) => r.id);
     }
 
-    const mapped: WordItem[] = data
-      .filter((d: { word_id: string; words?: { lemma?: string; translation?: string } | null }) => {
-        if (!d.words?.lemma || !d.words?.translation) return false;
+    type RawRow = { id: string; word_id: string; words: { lemma: string; translation: string }[] };
+    const mapped: WordItem[] = (data as RawRow[])
+      .filter(d => {
+        const w = Array.isArray(d.words) ? d.words[0] : d.words as unknown as { lemma: string; translation: string } | null;
+        if (!w?.lemma || !w?.translation) return false;
         if (wordIds && !wordIds.includes(d.word_id)) return false;
         return true;
       })
-      .map((d: { id: string; word_id: string; words?: { lemma?: string; translation?: string } | null }) => ({
-        id: d.word_id,
-        lemma: d.words!.lemma!,
-        translation: d.words!.translation!,
-      }));
+      .map(d => {
+        const w = Array.isArray(d.words) ? d.words[0] : d.words as unknown as { lemma: string; translation: string };
+        return { id: d.word_id, lemma: w.lemma, translation: w.translation };
+      });
 
     setAllWords(mapped);
     setLoading(false);
