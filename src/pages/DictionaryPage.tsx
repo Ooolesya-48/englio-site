@@ -45,8 +45,11 @@ const DictionaryPage: React.FC = () => {
   const [loading, setLoading] = useState(!dictCached);
 
   const [collections, setCollections] = useState<CollectionItem[]>(dictCached?.collections ?? []);
-  const [activeCollection, setActiveCollection] = useState<string | null>(null);
+  const [filterCollectionId, setFilterCollectionId] = useState<string | null>(null);
+  const [filterFavOnly, setFilterFavOnly] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Dropdown menu
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -303,32 +306,44 @@ const DictionaryPage: React.FC = () => {
 
   const getProgress = (w: WordItem) => Math.round((w.recognition_score + w.recall_score) / 2);
 
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setBulkText(ev.target?.result as string ?? ''); };
+    reader.readAsText(file, 'UTF-8');
+    e.target.value = '';
+  };
+
+  const hasFilter = filterCollectionId !== null || filterFavOnly;
+
   let filtered = [...words];
-  if (activeCollection) {
-    const col = collections.find(c => c.id === activeCollection);
+  if (filterCollectionId) {
+    const col = collections.find(c => c.id === filterCollectionId);
     if (col) filtered = filtered.filter(w => col.word_ids.includes(w.word_id));
   }
-
-  const activeColTitle = activeCollection ? collections.find(c => c.id === activeCollection)?.title : null;
+  if (filterFavOnly) filtered = filtered.filter(w => w.is_favorite);
 
   return (
     <div className={styles.page}>
       {/* Header — on mint bg */}
       <div className={styles.header}>
-        <button className={styles.headerBack} onClick={() => activeCollection ? setActiveCollection(null) : navigate('/home')}>
+        <button className={styles.headerBack} onClick={() => navigate('/home')}>
           &#8249;
         </button>
-        <h1 className={styles.title}>{activeColTitle || 'Мой словарь'}</h1>
+        <h1 className={styles.title}>Мой словарь</h1>
+        <button className={`${styles.filterBtn} ${hasFilter ? styles.filterBtnActive : ''}`} onClick={() => setFilterOpen(true)}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+          {hasFilter && <span className={styles.filterDot} />}
+        </button>
       </div>
 
       <div className={styles.contentBlock}>
-        {!activeCollection && collections.length > 0 && (
-          <div className={styles.collectionRow}>
-            {collections.map(col => (
-              <button key={col.id} className={styles.collectionChip}
-                onClick={() => { setActiveCollection(col.id); setSelected(new Set()); }}
-              >{col.title} ({col.word_ids.length})</button>
-            ))}
+        {hasFilter && (
+          <div className={styles.filterBar}>
+            {filterFavOnly && <span className={styles.filterTag}>Избранные</span>}
+            {filterCollectionId && <span className={styles.filterTag}>{collections.find(c => c.id === filterCollectionId)?.title}</span>}
+            <button className={styles.filterClear} onClick={() => { setFilterCollectionId(null); setFilterFavOnly(false); }}>✕</button>
           </div>
         )}
 
@@ -461,7 +476,12 @@ const DictionaryPage: React.FC = () => {
         ) : (
           <>
             <p className={styles.hint}>По одному на строку: слово - перевод</p>
-            <textarea className={styles.textarea} rows={8} value={bulkText} onChange={(e) => setBulkText(e.target.value)} placeholder={"apple - яблоко\nhouse - дом"} />
+            <input ref={fileInputRef} type="file" accept=".txt,.csv" style={{ display: 'none' }} onChange={handleFileImport} />
+            <button className={styles.fileImportBtn} onClick={() => fileInputRef.current?.click()}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Загрузить файл (.txt, .csv)
+            </button>
+            <textarea className={styles.textarea} rows={7} value={bulkText} onChange={(e) => setBulkText(e.target.value)} placeholder={"apple - яблоко\nhouse - дом"} />
             {bulkResult && <div className={styles.success}>{bulkResult}</div>}
             <button className={styles.submitBtn} onClick={bulkImport} disabled={bulkLoading}>{bulkLoading ? 'Импорт...' : 'Импортировать'}</button>
           </>
@@ -509,6 +529,48 @@ const DictionaryPage: React.FC = () => {
           <button className={styles.confirmMove} onClick={moveSelected} disabled={!moveTarget || (moveTarget === '__new__' && !newCollectionName.trim())}>Переместить</button>
         </div>
       </Modal>
+
+      {/* Filter sheet */}
+      {filterOpen && (
+        <div className={styles.filterOverlay} onClick={() => setFilterOpen(false)}>
+          <div className={styles.filterSheet} onClick={e => e.stopPropagation()}>
+            <div className={styles.filterSheetHandle} />
+            <p className={styles.filterSheetTitle}>Фильтр</p>
+
+            <button
+              className={`${styles.filterOption} ${!filterCollectionId && !filterFavOnly ? styles.filterOptionActive : ''}`}
+              onClick={() => { setFilterCollectionId(null); setFilterFavOnly(false); setFilterOpen(false); setSelected(new Set()); }}
+            >
+              <span>Все слова</span>
+              <span className={styles.filterOptionCount}>{words.length}</span>
+            </button>
+
+            <button
+              className={`${styles.filterOption} ${filterFavOnly ? styles.filterOptionActive : ''}`}
+              onClick={() => { setFilterFavOnly(!filterFavOnly); setFilterCollectionId(null); setFilterOpen(false); setSelected(new Set()); }}
+            >
+              <span>❤️ Избранные</span>
+              <span className={styles.filterOptionCount}>{words.filter(w => w.is_favorite).length}</span>
+            </button>
+
+            {collections.length > 0 && (
+              <>
+                <p className={styles.filterGroupLabel}>Коллекции</p>
+                {collections.map(col => (
+                  <button
+                    key={col.id}
+                    className={`${styles.filterOption} ${filterCollectionId === col.id ? styles.filterOptionActive : ''}`}
+                    onClick={() => { setFilterCollectionId(col.id); setFilterFavOnly(false); setFilterOpen(false); setSelected(new Set()); }}
+                  >
+                    <span>{col.title}</span>
+                    <span className={styles.filterOptionCount}>{col.word_ids.length}</span>
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

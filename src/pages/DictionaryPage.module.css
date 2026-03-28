@@ -42,6 +42,136 @@
   letter-spacing: -0.8px;
 }
 
+.filterBtn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: #636e72;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.filterBtn:hover { background: #f0f0f0; }
+.filterBtnActive { color: #3dbaaa; }
+
+.filterDot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3dbaaa;
+  border: 1.5px solid #fff;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+.filterTag {
+  background: #3dbaaa;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+.filterClear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #636e72;
+  font-size: 14px;
+  padding: 2px 6px;
+}
+
+/* Filter sheet */
+.filterOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+.filterSheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 12px 0 32px;
+  max-height: 70%;
+  overflow-y: auto;
+}
+.filterSheetHandle {
+  width: 36px;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.filterSheetTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d3232;
+  padding: 0 20px 8px;
+  margin: 0;
+}
+.filterGroupLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #b2bec3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 20px 4px;
+  margin: 0;
+}
+.filterOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #2d3232;
+  text-align: left;
+}
+.filterOption:hover { background: #f8f8f8; }
+.filterOptionActive { color: #3dbaaa; font-weight: 600; }
+.filterOptionCount {
+  font-size: 13px;
+  color: #b2bec3;
+  font-weight: 400;
+}
+.filterOptionActive .filterOptionCount { color: #3dbaaa; }
+
+/* File import button */
+.fileImportBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f9f8;
+  border: 1.5px dashed #3dbaaa;
+  border-radius: 10px;
+  color: #3dbaaa;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.fileImportBtn:hover { background: #e0f5f0; }
+
 
 /* Mint content block */
 .contentBlock {
