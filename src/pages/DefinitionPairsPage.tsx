@@ -642,6 +642,7 @@ const DefinitionPairsPage: React.FC = () => {
     const stars = getStars();
     return (
       <div className={styles.page}>
+        <div className={styles.resultScroll}>
         <div className={styles.resultTop}>
           <div className={styles.stars}>{'⭐'.repeat(stars)}{'☆'.repeat(3 - stars)}</div>
           <h2 className={styles.resultTitle}>Отлично!</h2>
@@ -747,6 +748,7 @@ const DefinitionPairsPage: React.FC = () => {
             </div>
           </div>
         )}
+        </div>{/* resultScroll */}
       </div>
     );
   }
