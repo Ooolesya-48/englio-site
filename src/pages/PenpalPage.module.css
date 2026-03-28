@@ -164,6 +164,7 @@
   border-radius: 6px;
 }
 .speakBtn:active { color: #35a091; background: #f0faf8; }
+.speakBtnActive { color: #35a091 !important; background: #e8f7f4 !important; }
 
 /* Typing indicator */
 .typing {

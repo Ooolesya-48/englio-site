@@ -62,10 +62,12 @@ function buildGreetingPrompt(profile: PenpalProfile): string {
   return parts.join(' ');
 }
 
-function speakText(text: string) {
+function speakText(text: string, onEnd?: () => void) {
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
   utt.lang = 'en-US';
+  utt.rate = 0.92;
+  if (onEnd) utt.onend = onEnd;
   const trySpeak = () => {
     const voices = window.speechSynthesis.getVoices();
     const female = voices.find(v =>
@@ -90,6 +92,7 @@ const PenpalPage: React.FC = () => {
   const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [wordPopup, setWordPopup] = useState<WordPopup | null>(null);
   const [listening, setListening] = useState(false);
+  const [speakingIdx, setSpeakingIdx] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<{ stop(): void } | null>(null);
@@ -114,6 +117,9 @@ const PenpalPage: React.FC = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking]);
+
+  // Остановить голос при уходе со страницы
+  useEffect(() => () => { window.speechSynthesis.cancel(); }, []);
 
   const saveMessages = async (msgs: Message[]) => {
     if (!user) return;
@@ -278,8 +284,22 @@ const PenpalPage: React.FC = () => {
                   : msg.content}
               </div>
               {msg.role === 'assistant' && (
-                <button className={styles.speakBtn} onClick={() => speakText(msg.content)}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                <button
+                  className={`${styles.speakBtn} ${speakingIdx === i ? styles.speakBtnActive : ''}`}
+                  onClick={() => {
+                    if (speakingIdx === i) {
+                      window.speechSynthesis.cancel();
+                      setSpeakingIdx(null);
+                    } else {
+                      setSpeakingIdx(i);
+                      speakText(msg.content, () => setSpeakingIdx(null));
+                    }
+                  }}
+                >
+                  {speakingIdx === i
+                    ? <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  }
                 </button>
               )}
             </div>
