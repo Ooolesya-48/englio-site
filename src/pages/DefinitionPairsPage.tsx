@@ -385,13 +385,19 @@ const DefinitionPairsPage: React.FC = () => {
     return [...unmatched, ...matchedR];
   }, [rightCol, matched, gameWords]);
 
-  // Audio — must stay synchronous for iOS (async breaks user-gesture requirement)
+  // Audio — pre-warm on game start for iOS (must call resume inside user gesture)
+  const warmAudio = () => {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
+    } catch {}
+  };
+
   const getAudioCtx = (): AudioContext | null => {
     try {
       if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') ctx.resume(); // fire-and-forget: iOS unlocks within same gesture
-      return ctx;
+      if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
+      return audioCtxRef.current;
     } catch { return null; }
   };
 
@@ -399,14 +405,15 @@ const DefinitionPairsPage: React.FC = () => {
     if (!settings.sound) return;
     try {
       const ctx = getAudioCtx(); if (!ctx) return;
+      const t = ctx.currentTime + 0.05;
       const osc = ctx.createOscillator(); const gain = ctx.createGain();
       osc.connect(gain); gain.connect(ctx.destination);
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.18, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+      osc.frequency.setValueAtTime(600, t);
+      osc.frequency.exponentialRampToValueAtTime(900, t + 0.08);
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+      osc.start(t); osc.stop(t + 0.15);
     } catch {}
   };
 
@@ -414,14 +421,15 @@ const DefinitionPairsPage: React.FC = () => {
     if (!settings.sound) return;
     try {
       const ctx = getAudioCtx(); if (!ctx) return;
+      const t = ctx.currentTime + 0.05;
       const osc = ctx.createOscillator(); const gain = ctx.createGain();
       osc.connect(gain); gain.connect(ctx.destination);
       osc.type = 'square';
-      osc.frequency.setValueAtTime(200, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.2);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+      osc.frequency.setValueAtTime(200, t);
+      osc.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+      osc.start(t); osc.stop(t + 0.2);
     } catch {}
   };
 
@@ -433,7 +441,7 @@ const DefinitionPairsPage: React.FC = () => {
         const osc = ctx.createOscillator(); const gain = ctx.createGain();
         osc.connect(gain); gain.connect(ctx.destination);
         osc.type = 'sine';
-        const t = ctx.currentTime + i * 0.12;
+        const t = ctx.currentTime + 0.05 + i * 0.12;
         osc.frequency.setValueAtTime(freq, t);
         gain.gain.setValueAtTime(0.15, t);
         gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
@@ -637,7 +645,7 @@ const DefinitionPairsPage: React.FC = () => {
             </div>
           </div>
 
-          <button className={styles.primaryBtn} onClick={() => startGameWithSettings(settings)}>Начать игру</button>
+          <button className={styles.primaryBtn} onClick={() => { warmAudio(); startGameWithSettings(settings); }}>Начать игру</button>
         </div>
       </div>
     );
@@ -658,7 +666,7 @@ const DefinitionPairsPage: React.FC = () => {
             <div className={styles.stat}><span className={styles.statValue}>{errors}</span><span className={styles.statLabel}>Ошибки</span></div>
             <div className={styles.stat}><span className={styles.statValue}>{gameWords.length}</span><span className={styles.statLabel}>Пары</span></div>
           </div>
-          <button className={styles.primaryBtn} onClick={() => startGameWithSettings(settings)}>Ещё раунд</button>
+          <button className={styles.primaryBtn} onClick={() => { warmAudio(); startGameWithSettings(settings); }}>Ещё раунд</button>
           <button className={styles.secondaryBtn} onClick={() => setShowSettings(true)}>Настройки</button>
           <button className={styles.secondaryBtn} onClick={() => navigate(isReview ? '/review' : '/games')}>
             {isReview ? 'К повторению' : 'К играм'}
@@ -685,14 +693,19 @@ const DefinitionPairsPage: React.FC = () => {
                     <span className={styles.wordResultRu}>{w.translation}</span>
                   </div>
                   <div className={styles.wordResultActions}>
-                    <button className={styles.iconBtn} onClick={e => speak(w.lemma, 'en-US', e)} title="Озвучить">🔊</button>
+                    <button className={styles.iconBtn} onClick={e => speak(w.lemma, 'en-US', e)} title="Озвучить">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="#35a091" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="#35a091" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </button>
                     {userCollections.length > 0 && (
                       <button
                         className={`${styles.iconBtn} ${saved ? styles.iconBtnSaved : ''}`}
                         onClick={e => { e.stopPropagation(); setCollectionPickerWordId(showPicker ? null : w.word_id); }}
-                        title="В коллекцию"
+                        title="Добавить в подборку"
                       >
-                        {saved ? '✓' : '+'}
+                        {saved
+                          ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#3dbaaa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          : <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2v11z" stroke="#636e72" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 11v4M10 13h4" stroke="#636e72" strokeWidth="2" strokeLinecap="round"/></svg>
+                        }
                       </button>
                     )}
                   </div>
@@ -701,6 +714,7 @@ const DefinitionPairsPage: React.FC = () => {
                 {/* Collection picker */}
                 {showPicker && (
                   <div className={styles.collectionPicker} onClick={e => e.stopPropagation()}>
+                    <p className={styles.collectionPickerLabel}>Добавить в подборку:</p>
                     {userCollections.map(col => (
                       <button
                         key={col.id}
@@ -787,8 +801,7 @@ const DefinitionPairsPage: React.FC = () => {
               onClick={() => handleLeftClick(w)}
               disabled={matched.has(w.id)}
             >
-              {matched.has(w.id) && <span className={styles.checkMark}>✓</span>}
-              {w.lemma}
+              {matched.has(w.id) ? <span className={styles.checkMark}>✓</span> : w.lemma}
             </button>
           ))}
         </div>
@@ -810,9 +823,7 @@ const DefinitionPairsPage: React.FC = () => {
                 onClick={() => handleRightClick(wordId)}
                 disabled={isMatched}
               >
-                {isMatched && <span className={styles.checkMark}>✓</span>}
-                {pos && <span className={styles.posTag}>{pos}</span>}
-                {definition}
+                {isMatched ? <span className={styles.checkMark}>✓</span> : <>{pos && <span className={styles.posTag}>{pos}</span>}{definition}</>}
               </button>
             );
           })}

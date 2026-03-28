@@ -507,6 +507,16 @@
   margin-top: 8px;
 }
 
+.collectionPickerLabel {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0 0 4px;
+  width: 100%;
+}
+
 .collectionPickerItem {
   background: #f0fafa;
   border: 1.5px solid #3dbaaa;
