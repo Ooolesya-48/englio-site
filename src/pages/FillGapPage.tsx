@@ -104,7 +104,7 @@ const FillGapPage: React.FC = () => {
     ghost.style.cssText = `
       position: fixed; z-index: 9999; pointer-events: none;
       background: #3dbaaa; color: #fff; font-weight: 700; font-size: 15px;
-      padding: 8px 18px; border-radius: 50px;
+      padding: 8px 14px; border-radius: 8px;
       transform: translate(-50%, -50%);
       left: ${touch.clientX}px; top: ${touch.clientY}px;
       box-shadow: 0 4px 16px rgba(61,186,170,0.5);
@@ -228,9 +228,43 @@ const FillGapPage: React.FC = () => {
     setMarkedWordIds(new Set());
 
     const level = getUserLevel();
-    const shuffled = [...words].sort(() => Math.random() - 0.5);
-    const picked = shuffled.slice(0, Math.min(ROUND_SIZE, shuffled.length));
 
+    // Pass 1: check ALL words for existing content (fast, no generation)
+    setLoadingMsg('Проверяем готовый контент...');
+    const existingContents = await Promise.all(words.map(w => getWordContent(w.word_id)));
+
+    const withContent: SentenceItem[] = [];
+    const needsGen: UserWord[] = [];
+
+    for (let i = 0; i < words.length; i++) {
+      const content = existingContents[i];
+      const gapRaw = content?.fill_the_gap ? (content.fill_the_gap as Record<string, string | string[]>)[level] : null;
+      const gapSentence = Array.isArray(gapRaw)
+        ? gapRaw[Math.floor(Math.random() * gapRaw.length)]
+        : gapRaw;
+      if (gapSentence && gapSentence.includes('___')) {
+        withContent.push({ userWord: words[i], sentence: gapSentence, answer: words[i].lemma });
+      } else {
+        needsGen.push(words[i]);
+      }
+    }
+
+    // If we have ready content — use ALL of it (shuffled), generate rest in background
+    if (withContent.length > 0) {
+      const items = withContent.sort(() => Math.random() - 0.5);
+      setSentences(items);
+      setBank(items.map(s => s.answer).sort(() => Math.random() - 0.5));
+      setPlacements(new Array(items.length).fill(null));
+      setLoading(false);
+      // Background: generate for words without content
+      for (const word of needsGen) {
+        getOrGenerateFillGap(word.word_id, word.lemma, word.translation);
+      }
+      return;
+    }
+
+    // No ready content: generate for first ROUND_SIZE words
+    const picked = [...words].sort(() => Math.random() - 0.5).slice(0, Math.min(ROUND_SIZE, words.length));
     let done = 0;
     setLoadingMsg(`Генерируем контент: 0/${picked.length}...`);
     const contents = await Promise.all(
@@ -245,24 +279,18 @@ const FillGapPage: React.FC = () => {
 
     const items: SentenceItem[] = [];
     for (let i = 0; i < picked.length; i++) {
-      const word = picked[i];
       const content = contents[i];
       if (!content) continue;
       const gapRaw = (content.fill_the_gap as Record<string, string | string[]>)[level];
-      // Support both old (string) and new (array of 3 variants) format
       const gapSentence = Array.isArray(gapRaw)
         ? gapRaw[Math.floor(Math.random() * gapRaw.length)]
         : gapRaw;
       if (!gapSentence || !gapSentence.includes('___')) continue;
-      items.push({ userWord: word, sentence: gapSentence, answer: word.lemma });
+      items.push({ userWord: picked[i], sentence: gapSentence, answer: picked[i].lemma });
     }
 
     setSentences(items);
-    if (items.length === 0) {
-      console.error('buildRound: no sentences generated for words', picked.map(w => w.lemma));
-      setNoContent(true);
-    }
-    // Банк = правильные ответы в случайном порядке
+    if (items.length === 0) setNoContent(true);
     setBank(items.map(s => s.answer).sort(() => Math.random() - 0.5));
     setPlacements(new Array(items.length).fill(null));
     setLoading(false);
