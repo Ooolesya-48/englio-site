@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { getOrGenerateFillGap, normalizeLevel } from '../lib/generate-content';
+import { getOrGenerateFillGap, getWordContent, normalizeLevel } from '../lib/generate-content';
 import { calculateReview, getNextReviewDate } from '../lib/spaced-repetition';
 import styles from './FillGapPage.module.css';
 
