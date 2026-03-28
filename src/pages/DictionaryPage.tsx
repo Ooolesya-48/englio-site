@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
@@ -309,9 +310,24 @@ const DictionaryPage: React.FC = () => {
   const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const isXlsx = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
     const reader = new FileReader();
-    reader.onload = (ev) => { setBulkText(ev.target?.result as string ?? ''); };
-    reader.readAsText(file, 'UTF-8');
+    reader.onload = (ev) => {
+      if (isXlsx) {
+        const data = new Uint8Array(ev.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json<string[]>(sheet, { header: 1 });
+        const lines = (rows as string[][])
+          .filter(row => row.length >= 2 && row[0] && row[1])
+          .map(row => `${String(row[0]).trim()} - ${String(row[1]).trim()}`);
+        setBulkText(lines.join('\n'));
+      } else {
+        setBulkText(ev.target?.result as string ?? '');
+      }
+    };
+    if (isXlsx) reader.readAsArrayBuffer(file);
+    else reader.readAsText(file, 'UTF-8');
     e.target.value = '';
   };
 
@@ -476,10 +492,10 @@ const DictionaryPage: React.FC = () => {
         ) : (
           <>
             <p className={styles.hint}>По одному на строку: слово - перевод</p>
-            <input ref={fileInputRef} type="file" accept=".txt,.csv" style={{ display: 'none' }} onChange={handleFileImport} />
+            <input ref={fileInputRef} type="file" accept=".txt,.csv,.xlsx,.xls" style={{ display: 'none' }} onChange={handleFileImport} />
             <button className={styles.fileImportBtn} onClick={() => fileInputRef.current?.click()}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Загрузить файл (.txt, .csv)
+              Загрузить файл (.txt, .csv, .xlsx)
             </button>
             <textarea className={styles.textarea} rows={7} value={bulkText} onChange={(e) => setBulkText(e.target.value)} placeholder={"apple - яблоко\nhouse - дом"} />
             {bulkResult && <div className={styles.success}>{bulkResult}</div>}

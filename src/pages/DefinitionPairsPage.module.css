@@ -368,9 +368,6 @@
   color: #2a9d8f;
   opacity: 0.45;
   cursor: default;
-  flex: 0 0 32px;
-  min-height: 32px;
-  font-size: 11px;
 }
 
 .checkMark {
