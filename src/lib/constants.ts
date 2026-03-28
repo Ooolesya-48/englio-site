@@ -30,4 +30,5 @@ export const GAME_MODES: GameMode[] = [
   { id: 'quiz',     icon: '✅', title: 'Тест',          desc: 'Выбери правильный ответ',                    basePath: '/quiz',             active: true, reviewable: true, minWords: 4 },
   { id: 'fill-gap',         icon: '✍️', title: 'Вставь слово',  desc: 'Вставь пропущенное слово в предложение',     basePath: '/fill-gap',            active: true, reviewable: true },
   { id: 'definition-pairs', icon: '📖', title: 'Найди пару',   desc: 'Соедини слово с его определением на английском', basePath: '/definition-pairs', active: true, reviewable: true, minWords: 4 },
+  { id: 'matching', icon: '🎯', title: 'Соответствие', desc: 'Соедини слово с переводом — на время', basePath: '/matching', active: true, reviewable: false, minWords: 2 },
 ];

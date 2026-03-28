@@ -27,6 +27,7 @@ import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
 import FillGapPage from './pages/FillGapPage';
 import DefinitionPairsPage from './pages/DefinitionPairsPage';
+import MatchingPage from './pages/MatchingPage';
 import CollectionsPage from './pages/CollectionsPage';
 import MyCollectionsPage from './pages/MyCollectionsPage';
 import SubCollectionsPage from './pages/SubCollectionsPage';
@@ -111,6 +112,11 @@ function App() {
           <Route path="/definition-pairs" element={
             <ProtectedRoute>
               <AppLayout><DefinitionPairsPage /></AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/matching" element={
+            <ProtectedRoute>
+              <AppLayout><MatchingPage /></AppLayout>
             </ProtectedRoute>
           } />
           <Route path="/collections/create" element={
