@@ -279,8 +279,8 @@ const MatchingPage: React.FC = () => {
         />
       </div>
 
-      {/* Grid */}
-      <div className={styles.scroll}>
+      {/* Grid / Result */}
+      <div className={styles.gridArea}>
         {finished ? (
           <div className={styles.resultBox}>
             <div className={styles.resultEmoji}>{isNewBest ? '🏆' : '🎉'}</div>
@@ -325,7 +325,7 @@ const MatchingPage: React.FC = () => {
                   ) : (
                     <span
                       className={styles.cardText}
-                      style={{ fontSize: card.text.length > 14 ? '11px' : card.text.length > 9 ? '12px' : '13px' }}
+                      style={{ fontSize: card.text.length > 14 ? '12px' : card.text.length > 9 ? '14px' : '16px' }}
                     >{card.text}</span>
                   )}
                 </button>
@@ -339,7 +339,7 @@ const MatchingPage: React.FC = () => {
       {!finished && (
         <div className={styles.bottomBar}>
           <button className={styles.restartBtn} onClick={() => buildRound(allWords)}>
-            Новые слова
+            Новый раунд
           </button>
         </div>
       )}
