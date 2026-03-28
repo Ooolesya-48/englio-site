@@ -385,55 +385,67 @@ const DefinitionPairsPage: React.FC = () => {
     return [...unmatched, ...matchedR];
   }, [rightCol, matched, gameWords]);
 
-  // Audio
-  const playMatchSound = () => {
-    if (!settings.sound) return;
+  // Audio — resume ctx for iOS (AudioContext starts suspended after page load)
+  const getAudioCtx = async (): Promise<AudioContext | null> => {
     try {
       if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
       const ctx = audioCtxRef.current;
-      const osc = ctx.createOscillator(); const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.18, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
-    } catch {}
+      if (ctx.state === 'suspended') await ctx.resume();
+      return ctx;
+    } catch { return null; }
+  };
+
+  const playMatchSound = () => {
+    if (!settings.sound) return;
+    getAudioCtx().then(ctx => {
+      if (!ctx) return;
+      try {
+        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+      } catch {}
+    });
   };
 
   const playErrorSound = () => {
     if (!settings.sound) return;
-    try {
-      if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
-      const ctx = audioCtxRef.current;
-      const osc = ctx.createOscillator(); const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(200, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.2);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
-    } catch {}
+    getAudioCtx().then(ctx => {
+      if (!ctx) return;
+      try {
+        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(200, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+      } catch {}
+    });
   };
 
   const playFinishSound = () => {
     if (!settings.sound) return;
-    try {
-      if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
-      const ctx = audioCtxRef.current;
-      [523, 659, 784, 1047].forEach((freq, i) => {
-        const osc = ctx.createOscillator(); const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine';
-        const t = ctx.currentTime + i * 0.12;
-        osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.15, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-        osc.start(t); osc.stop(t + 0.3);
-      });
-    } catch {}
+    getAudioCtx().then(ctx => {
+      if (!ctx) return;
+      try {
+        [523, 659, 784, 1047].forEach((freq, i) => {
+          const osc = ctx.createOscillator(); const gain = ctx.createGain();
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.type = 'sine';
+          const t = ctx.currentTime + i * 0.12;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+          osc.start(t); osc.stop(t + 0.3);
+        });
+      } catch {}
+    });
   };
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
@@ -795,10 +807,12 @@ const DefinitionPairsPage: React.FC = () => {
             const isJustMatched = wordObj ? justMatched === wordObj.id : false;
             const definition = getDefinition(wordId, settings.level);
             const pos = contentMap.get(wordId)?.part_of_speech;
+            const defFontSize = definition.length > 70 ? '11px' : definition.length > 45 ? '12px' : '13px';
             return (
               <button
                 key={wordId}
                 className={`${styles.tile} ${styles.tileDefinition} ${selectedRight === wordId ? styles.tileSelected : ''} ${isMatched ? styles.tileMatched : ''} ${isJustMatched ? styles.tileJustMatched : ''} ${shakeRight === wordId ? styles.tileShake : ''}`}
+                style={{ fontSize: defFontSize }}
                 onClick={() => handleRightClick(wordId)}
                 disabled={isMatched}
               >
